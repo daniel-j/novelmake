@@ -3,7 +3,7 @@ import re
 import sys
 import os.path
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '../tools/html2latex'))
+sys.path.append(os.path.join(os.path.dirname(__file__), 'html2latex'))
 from html2latex import Html2Latex
 
 # this is made with the novel class in mind.
