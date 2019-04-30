@@ -1,0 +1,8 @@
+build/
+release/
+tools/epubcheck/
+tools/htmltolatex/
+tmp/
+.texmf-var/
+current.epub
+__pycache__

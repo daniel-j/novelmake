@@ -1,0 +1,6 @@
+[submodule "tools/html2latex"]
+	path = tools/html2latex
+	url = https://github.com/daniel-j/html2latex
+[submodule "tools/novel"]
+	path = tools/novel
+	url = https://github.com/daniel-j/novel

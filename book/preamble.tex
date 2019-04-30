@@ -1,0 +1,67 @@
+
+\documentclass[draft,cropmarks,cropview]{novel}
+%\documentclass{novel}
+
+\usepackage{needspace}
+\usepackage[american]{selnolig}
+\usepackage[draft,parindent,lastparline,nosingleletter,homeoarchy,rivers]{impnattypo}
+
+%\usepackage{lua-visual-debug}
+
+%\SetTrimSize{150mm}{220mm}
+%  top, outside, bottom, inside
+%\SetMargins{7mm}{16mm}{16.9mm}{20.5mm}
+%\SetLinesPerPage{41}
+
+\SetTitle{The book title}
+\SetAuthor{The name of the author}
+
+% Set output intent and compliance standard:
+%  For America:
+\SetPDFX[CGATSTR001]{X-1a:2001}
+%  For Europe:
+%\SetPDFX[FOGRA39]{X-1a:2001}
+%  For Japan:
+%\SetPDFX[JC200103]{X-1a:2001}
+
+\SetHeadFootStyle{1}
+\SetLooseHead{10}
+
+% modify my-microtype.cfg if desired
+\tolerance=700
+\microtypesetup{config=book/my-microtype,stretch=30,shrink=18,final,tracking,protrusion=true}
+
+% Main font setup
+% If no Adobe Garamond Pro, fall back to default
+
+\IfFontExistsTF{./fonts/AdobeGaramondPro/AdobeGaramondPro-Regular.otf}{
+	\SetParentFont[
+		Path=./fonts/AdobeGaramondPro/,
+		Extension=.otf,
+		ItalicFont=*-Italic,
+		BoldFont=*-Semibold,
+		BoldItalicFont=*-SemiboldItalic,
+		UprightFont=*-Regular,
+		Numbers=Lining
+	]{AdobeGaramondPro}
+	\SetFontSize{11.5pt}
+}{
+	\SetFontSize{11.5pt}
+}
+
+% Set up a special font
+% \NewFontFace\quandofont[Path=./fonts/]{Quando-Regular.otf}
+
+% Make your own \scenepause command. This was used for Project: Sunflower:
+% \newcommand\scenepause{
+%   \null\par
+%   \nopagebreak
+%   \noindent\hfil\charscale[0.9,0em,0.45em]{\quandofont\textasciitilde{} \textasciitilde{} \charscale[1.0,0em,-0.15em]{*} \textasciitilde{} \textasciitilde}\hfil\par
+% }
+% \renewcommand\dotfill{\leaders\hbox to 0.3em{\hfil.\hfil}\hfill}
+
+% useful string replace function
+\def\strreplace#1#2#3{%
+ \def\tmp##1#2{##1#3\tmp}%
+   \tmp#1\stopreplace#2\stopreplace}
+\def\stopreplace#1\stopreplace{}

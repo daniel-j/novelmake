@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+inputfile="$1"
+
+shift
+
+export TEXINPUTS=./tools/novel/tex/:$(kpsewhich -var-value TEXINPUTS)
+export OPENTYPEFONTS=./fonts/:./tools/novel/fonts/:$(kpsewhich -var-value OPENTYPEFONTS)
+
+exec tools/latexrun --latex-cmd lualatex "$inputfile" -Wall -Wno-fontspec --verbose-cmds -O build -o "build/$(basename "$inputfile" .tex).pdf" "$@"
