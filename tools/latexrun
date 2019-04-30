@@ -1328,7 +1328,6 @@ class LaTeXFilter:
                 self.__message('warning', None,
                                "unbalanced `{' in log; file names may be wrong")
         elif ch == '}':
-            print('WARNING!!!!!!!', self.__data[self.__lstart:self.__lend].rstrip())
             self.__message('warning', None,
                            "extra `}' in log; file names may be wrong")
 
