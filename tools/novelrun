@@ -4,6 +4,7 @@ inputfile="$1"
 
 shift
 
+export TEXMFVAR=./.texmf-var
 export TEXINPUTS=./tools/novel/tex/:$(kpsewhich -var-value TEXINPUTS)
 export OPENTYPEFONTS=./fonts/:./tools/novel/fonts/:$(kpsewhich -var-value OPENTYPEFONTS)
 
