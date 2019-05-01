@@ -1,7 +1,14 @@
 # novelmake
 
+This repo is a work in progress.
+
+Create pretty books using the [`novel`](https://www.ctan.org/pkg/novel) LaTeX documentclass. This is for typesetting novels and has been used in various small scale printing projects. This project's purpose is to get you started with it easily, and to assist your book making.
+
+If you're only interested in making an ebook, check out the sibling project [epubmake](https://github.com/daniel-j/epubmake).
 
 ## Getting Started
+
+Read a couple of parts of [`novel`'s documentation](http://mirrors.ctan.org/macros/luatex/latex/novel/doc/novel-documentation.html) before starting.
 
 Install the following dependencies:
 
@@ -16,3 +23,7 @@ Optional, but if you decide to make an ebook with your pdf book (recommended!) y
 This repository uses submodules, clone it with the following command:
 
 `git clone --recurse-submodules https://github.com/daniel-j/novelmake.git`
+
+## Usage
+
+The main TeX file is `book/book.tex`. XHTML files from the ebook are converted to TeX using the config in `tools/html2latex-novel.py`. Modify this to get the desired results, along with the CSS of the ebook. If you don't care about the ebook, you can change the chapter includes in `book.tex`. Run `make buildbook` to build the pdf. It will end up in the `build` directory.

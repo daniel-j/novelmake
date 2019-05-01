@@ -1,0 +1,117 @@
+@import url('../Styles/fonts.css');
+
+/*
+article, aside, figure, figcaption, footer, header, main, nav, section {
+  display: block;
+}
+*/
+
+@page {
+	/* modify these if needed */
+	/* margin-top: 8pt; */
+	/* margin-bottom: 8pt; */
+}
+
+body {
+  background-color: #fff;
+  color: #000;
+  text-align: justify;
+  /* font-family: "Adobe Garamond Pro", serif; */
+  font-kerning: normal;
+  font-variant: common-ligatures lining-nums;
+  -webkit-font-feature-settings: "kern", "liga", "clig", "lnum";
+  font-feature-settings: "kern", "liga", "clig", "lnum";
+}
+
+#toc a, #titlepage a, #copyrightpage a, #toc a i {
+  color: inherit !important;
+  text-decoration: underline;
+  background: transparent !important;
+}
+
+
+p {
+  margin-top: 0em;
+  margin-bottom: 0em;
+  text-indent: 1em;
+  /* change widows/orphans if desired */
+  widows: 1;
+  orphans: 1;
+  hanging-punctuation: first;
+  position: relative;
+}
+p.double {
+  text-indent: 0;
+  margin-top: 1em;
+}
+p.double:before {
+  content: '\a0';
+  display: block;
+  margin-bottom: -1em;
+}
+p.noindent {
+  text-indent: 0;
+}
+.chapter-name {
+  font-size: 1.7em;
+  font-weight: normal;
+  text-align: center;
+  padding-top: 0em;
+  padding-bottom: 1em;
+  margin: 0;
+}
+.negative {
+  text-indent: -1em;
+  text-align: left;
+}
+img {
+  height: auto;
+  width: auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+.leftalign {
+  text-align: left;
+}
+.no-break {
+  -epub-break-inside: avoid;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+.center {
+  text-align: center;
+  text-wrap: balanced;
+  text-indent: 0;
+}
+.balanced {
+  text-wrap: balanced;
+}
+.needspace.two {
+  /* Used for PDF only */
+  -latex-needspace: 2;
+}
+.clearpage {
+  /* Used for PDF only */
+  -latex-clear-page: 1;
+}
+h3 {
+  font-weight: normal;
+  text-align: center;
+  margin: 0;
+  padding-top: 0.5em;
+  margin-bottom: 1em;
+  font-size: 1.25em;
+}
+
+#toc ol {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+#toc [hidden] {
+  display: none;
+}
+
+.ebookonly {
+  -latex-display: none;
+}

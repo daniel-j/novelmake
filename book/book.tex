@@ -17,6 +17,8 @@
 
 Put title page, copyright, toc, dedication here
 
+\include{./book/toc}
+
 \cleartorecto
 
 \mainmatter
@@ -25,7 +27,15 @@ Put title page, copyright, toc, dedication here
 
 \global\setlength\parindent{1em}
 
-Put chapter include commands here
+\SetVersoHeadText{Text on left page}
+\SetRectoHeadText{Text on right page}
+\label{ch:intro}
+\include{./build/latex/introduction.xhtml}
+
+\SetVersoHeadText{Text on left page}
+\SetRectoHeadText{Text on right page}
+\label{ch:01}
+\include{./build/latex/chapter_01.xhtml}
 
 \cleartorecto
 

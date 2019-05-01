@@ -1,0 +1,28 @@
+@import url('../Styles/fonts.css');
+
+.title {
+  padding: 2em 0;
+  text-align: center;
+}
+.title .story_name,
+.title .author {
+  text-align: center;
+  line-height: 1.2;
+  font-family: sans-serif;
+}
+.title .story_name {
+  font-size: 2.5em;
+  margin-right: 5px;
+  letter-spacing: 0.05em;
+}
+.title .author {
+  font-size: 1em;
+  padding-top: 1em;
+}
+.title .author a {
+  /*font-weight: bold;*/
+}
+
+#copyrightpage p {
+  text-align: center;
+}

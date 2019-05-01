@@ -95,6 +95,7 @@ selectors = {
 
     # customized
     'p': handle_paragraph,
+    '.chapter-name': s('\n\n\\noindent\\hfil\\charscale[2,0,-0.1\\nbs]{', '}\\hfil\\newline\n\\vspace*{1\\nbs}\n\n', ignoreStyle=True),
     '.center': s('\n\n{\\csname @flushglue\\endcsname=0pt plus .25\\textwidth\n\\noindent\\centering{}', '\\par\n}', ignoreStyle=True),
     '.vfill': s('\n\n\\vspace*{\\fill}', '', ignoreContent=True, ignoreStyle=True)
 }
