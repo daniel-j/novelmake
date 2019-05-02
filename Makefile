@@ -40,7 +40,7 @@ KINDLEGEN_URL = http://kindlegen.s3.amazonaws.com/kindlegen_linux_2.6_i386_v2_9.
 LATEXNOVEL_URL = http://mirrors.ctan.org/macros/luatex/latex/novel.zip
 
 .PRECIOUS: build/latex/%.xhtml.tex
-.PHONY: all clean validate build buildkepub buildkindle buildbook buildtexparts buildpdfparts extractcurrent watchcurrent release publish
+.PHONY: all clean validate build buildkepub buildkindle buildcover buildbook buildtexparts buildpdfparts extractcurrent watchcurrent release publish
 all: build
 release: clean build validate buildkepub buildkindle
 
@@ -110,13 +110,12 @@ build/parts/%.pdf: $(LATEXNOVEL) build/latex/%.xhtml.tex book/* tools/novel/*
 
 buildpdfparts: $(PDFPARTS)
 
-bookcover: cover.png
+buildcover: build/cover.pdf
+build/cover.pdf: cover.png book/cover.tex
 	@echo Making book cover...
-	gm convert -strip cover.png build/cover.tif
-	gm mogrify -profile color-profiles/srgb.icc -profile color-profiles/238-limit.icc build/cover.tif
-	gm mogrify -strip build/cover.tif
-	gm convert -units PixelsPerInch -density 300 -quality 100 build/cover.tif build/cover-cmyk240.jpg
-	TEXINPUTS=./:./tools/novel/:$(shell kpsewhich -var-value TEXINPUTS) lualatex --output-directory=./build ./book/cover.tex
+	@cd tools/novel/scripts && ./makecmyk ../../../../cover.png
+	@tools/novelrun ./book/cover.tex
+	@mv tools/novel/scripts/output/cover-softproof.tif tools/novel/scripts/output/cover-NOTpdfx.pdf build/
 
 $(EPUBCHECK):
 	@echo Downloading epubcheck...

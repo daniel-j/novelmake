@@ -6,7 +6,7 @@ cd "${0%/*}"
 
 imagename="djazz/latexenv"
 
-cat ./Dockerfile | docker build --force-rm=true --rm -t "$imagename" -
+docker build --force-rm=true --rm -t "$imagename" .
 
 docker run --rm -it \
 	-v "$(realpath ..):/workspace" \
