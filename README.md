@@ -12,8 +12,8 @@ Read a couple of parts of [`novel`'s documentation](http://mirrors.ctan.org/macr
 
 Install the following dependencies:
 
-- Ubuntu: `make zip unzip texlive-latex-extra texlive-luatex texlive-lang-french texlive-fonts-extra fontconfig imagemagick ghostscript python3-lxml python3-cssutils python3-cssselect`
-- Arch Linux: `make zip unzip texlive-latexextra fontconfig imagemagick ghostscript python-lxml python-cssutils python-cssselect`
+- Ubuntu: `make zip unzip texlive-latex-extra texlive-luatex texlive-fonts-extra texlive-lang-french fontconfig imagemagick graphicsmagick ghostscript python3-lxml python3-cssutils python3-cssselect`
+- Arch Linux: `make zip unzip texlive-latexextra fontconfig imagemagick graphicsmagick ghostscript python-lxml python-cssutils python-cssselect`
 - Windows: Install [Ubuntu for Windows 10](https://www.microsoft.com/en-us/p/ubuntu-1804-lts/9n9tngvndl3q) and install the Ubuntu dependencies. Clone the repo (recursively, see below) somewhere in `/mnt/c/Users/<your windows username>` so you can access the files with Explorer. [Screenshot of working setup.](https://images2.imgbox.com/af/f8/2CU9EKB8_o.png) This way you do not have to mess with getting LuaLaTeX, bash, make, python etc working on Windows. An other solution is to use the Docker container (not tested on Windows).
 - macOS: To be continued...
 
