@@ -1,20 +1,19 @@
 FROM ubuntu:bionic
 
+ENV LC_ALL C.UTF-8
+ENV LANG C.UTF-8
+
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
     less nano bash-completion \
     make zip unzip \
-    texlive-latex-extra texlive-luatex texlive-lang-french texlive-fonts-extra fontconfig \
-    imagemagick ghostscript \
+    texlive-latex-extra texlive-luatex texlive-fonts-extra texlive-lang-french fontconfig \
+    imagemagick graphicsmagick ghostscript \
     python3-lxml python3-cssutils python3-cssselect
 
-RUN apt-get clean
-
-COPY ./imagemagick-policy.xml /etc/ImageMagick-6/policy.xml
+RUN apt-get clean && apt-get autoclean
 
 ENV TEXMFVAR /workspace/.texmf-var
-ENV LC_ALL C.UTF-8
-ENV LANG C.UTF-8
 
 VOLUME ["/workspace"]
 
