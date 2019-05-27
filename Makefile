@@ -21,6 +21,8 @@ TEXPARTS = $(shell find $(SOURCE) -name '*.xhtml' | grep -v 'nav\.xhtml\|cover\.
 PDFPARTS = $(shell find $(SOURCE) -name '*.xhtml' | grep -v 'nav\.xhtml\|cover\.xhtml\|title\.xhtml' | sed -e 's/.*Text\/\(.*\)\.xhtml/.\/build\/parts\/\1.pdf/' | sort)
 PNGFILES = $(shell find $(SOURCE) -name '*.png' | sort)
 
+ARTWORKFILES = $(shell find artwork -name '*.png' -or -name '*.jpg' | grep -v -w "artwork/cover.png" | sort | sed -e 's/^artwork\//.\/build\/artwork\//' -e 's/-bw\.jpg$$/-bw\.png/')
+
 EPUBCHECK = ./tools/epubcheck/epubcheck.jar
 KINDLEGEN = ./tools/kindlegen/kindlegen
 LATEXNOVEL = ./tools/novel
@@ -37,7 +39,7 @@ EPUBCHECK_URL = https://github.com/IDPF/epubcheck/releases/download/v$(EPUBCHECK
 KINDLEGEN_URL_LINUX = http://kindlegen.s3.amazonaws.com/kindlegen_linux_2.6_i386_v2_9.tar.gz
 
 .PRECIOUS: build/latex/%.xhtml.tex
-.PHONY: all clean validate build buildkepub buildkindle buildcover buildbook buildtexparts buildpdfparts extractcurrent watchcurrent release publish
+.PHONY: all clean validate build buildkepub buildkindle buildcover buildbook buildtexparts buildpdfparts buildartwork extractcurrent watchcurrent release publish
 all: build
 release: clean build validate buildkepub buildkindle
 
@@ -97,7 +99,7 @@ build/tex/impnattypo/impnattypo.sty: tools/impnattypo/impnattypo.ins tools/impna
 	@cd tools/impnattypo && latex -draftmode -output-directory=../../build/tex/impnattypo impnattypo.ins
 
 # Builds the PDF from LaTeX files
-$(PDFFILE): $(LATEXNOVEL) $(TEXPARTS) book/* build/tex/impnattypo/impnattypo.sty tools/novel/*
+$(PDFFILE): $(LATEXNOVEL) $(TEXPARTS) book/* build/tex/impnattypo/impnattypo.sty tools/novel/* buildartwork
 	@echo Building book...
 	@tools/novelrun book/book.tex
 	@touch $(PDFFILE)
@@ -113,11 +115,38 @@ build/parts/%.pdf: $(LATEXNOVEL) build/latex/%.xhtml.tex book/* tools/novel/*
 buildpdfparts: $(PDFPARTS)
 
 buildcover: build/cover.pdf
-build/cover.pdf: cover.png book/cover.tex
+build/cover.pdf: artwork/cover.png book/cover.tex
 	@echo Making book cover...
-	@cd tools/novel/scripts && ./makecmyk ../../../../cover.png
+	@cd tools/novel/scripts && ./makecmyk ../../../../artwork/cover.png
 	@tools/novelrun ./book/cover.tex
 	@mv tools/novel/scripts/output/cover-softproof.tif tools/novel/scripts/output/cover-NOTpdfx.pdf build/
+
+define BUILDARTWORK
+	@echo Converting image "$<" to "$@"
+	@mkdir -p build/artwork
+	@name="$$(basename "$<")"; \
+	noext="$${name%.*}"; \
+	ext="$${name##*.}"; \
+	if [[ "$<" == *"-bw."* ]]; then \
+		(cd tools/novel/scripts && ./makebw "../../../../$<"); \
+		mv -v "tools/novel/scripts/output/$$noext-"*"-BW.png" "$@"; \
+	else \
+		(cd tools/novel/scripts && ./makegray "../../../../$<"); \
+		mv -v "tools/novel/scripts/output/$$noext-"*"-GRAY.$$ext" "$@"; \
+	fi
+endef
+
+build/artwork/%-bw.png: artwork/%-bw.png
+	$(BUILDARTWORK)
+build/artwork/%-bw.png: artwork/%-bw.jpg
+	$(BUILDARTWORK)
+build/artwork/%.png: artwork/%.png
+	$(BUILDARTWORK)
+build/artwork/%.jpg: artwork/%.jpg
+	$(BUILDARTWORK)
+buildartwork: $(ARTWORKFILES)
+	@echo All images converted!
+
 
 $(EPUBCHECK):
 	@echo Downloading epubcheck...
@@ -168,6 +197,7 @@ clean:
 	rm -f "$(KINDLEFILE)"
 	rm -f "$(AZW3FILE)"
 	rm -rf build/.book build/parts build/.parts build/latex
+	rm -rf build/artwork
 	@# only remove dir if it's empty:
 	@(rmdir `dirname $(EPUBFILE)`; exit 0)
 
