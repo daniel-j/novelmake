@@ -30,14 +30,11 @@ EBOOKVIEWER := $(shell command -v ebook-viewer 2>&1)
 JAVA        := $(shell command -v java 2>&1)
 INOTIFYWAIT := $(shell command -v inotifywait 2>&1)
 
-EPUBCHECK_VERSION = 4.2.0
+EPUBCHECK_VERSION = 4.2.1
 # https://github.com/IDPF/epubcheck/releases
 EPUBCHECK_URL = https://github.com/IDPF/epubcheck/releases/download/v$(EPUBCHECK_VERSION)/epubcheck-$(EPUBCHECK_VERSION).zip
 # http://www.amazon.com/gp/feature.html?docId=1000765211
-KINDLEGEN_URL = http://kindlegen.s3.amazonaws.com/kindlegen_linux_2.6_i386_v2_9.tar.gz
-
-# HTMLTOLATEX_URL = https://sourceforge.net/projects/htmltolatex/files/htmltolatex-1.0.1/htmltolatex-1.0.1.zip/download
-LATEXNOVEL_URL = http://mirrors.ctan.org/macros/luatex/latex/novel.zip
+KINDLEGEN_URL_LINUX = http://kindlegen.s3.amazonaws.com/kindlegen_linux_2.6_i386_v2_9.tar.gz
 
 .PRECIOUS: build/latex/%.xhtml.tex
 .PHONY: all clean validate build buildkepub buildkindle buildcover buildbook buildtexparts buildpdfparts extractcurrent watchcurrent release publish
@@ -94,11 +91,13 @@ build/latex/%.xhtml.tex: src/OEBPS/Text/%.xhtml src/OEBPS/Styles/style.css tools
 
 buildtexparts: $(TEXPARTS)
 
-tools/impnattypo/impnattypo.sty: tools/impnattypo/impnattypo.ins tools/impnattypo/impnattypo.dtx
-	@cd tools/impnattypo && yes | latex impnattypo.ins
+build/tex/impnattypo/impnattypo.sty: tools/impnattypo/impnattypo.ins tools/impnattypo/impnattypo.dtx
+	@rm -rf build/tex/impnattypo
+	@mkdir -p build/tex/impnattypo
+	@cd tools/impnattypo && latex -draftmode -output-directory=../../build/tex/impnattypo impnattypo.ins
 
 # Builds the PDF from LaTeX files
-$(PDFFILE): $(LATEXNOVEL) $(TEXPARTS) book/* tools/impnattypo/impnattypo.sty tools/novel/*
+$(PDFFILE): $(LATEXNOVEL) $(TEXPARTS) book/* build/tex/impnattypo/impnattypo.sty tools/novel/*
 	@echo Building book...
 	@tools/novelrun book/book.tex
 	@touch $(PDFFILE)
@@ -131,27 +130,10 @@ $(EPUBCHECK):
 
 $(KINDLEGEN):
 	@echo Downloading kindlegen...
-	@curl -o "kindlegen.tar.gz" -L "$(KINDLEGEN_URL)" --connect-timeout 30
+	@curl -o "kindlegen.tar.gz" -L "$(KINDLEGEN_URL_LINUX)" --connect-timeout 30
 	@mkdir -p `dirname $(KINDLEGEN)`
 	@tar -zxf "kindlegen.tar.gz" -C `dirname $(KINDLEGEN)`
 	@rm "kindlegen.tar.gz"
-
-# $(HTMLTOLATEX):
-# 	@echo Downloading HTML to LaTeX
-# 	@curl -o "htmltolatex.zip" -L "$(HTMLTOLATEX_URL)" --connect-timeout 30
-# 	@mkdir -p `dirname $(HTMLTOLATEX)`
-# 	@rm -rf `dirname $(HTMLTOLATEX)`
-# 	@unzip -q "htmltolatex.zip"
-# 	@mv "htmltolatex-1.0.1" "`dirname $(HTMLTOLATEX)`"
-# 	@rm "htmltolatex.zip"
-
-$(LATEXNOVEL):
-	@echo Downloading LaTeX package novel
-	@curl -o "novel.zip" -L "$(LATEXNOVEL_URL)" --connect-timeout 30
-	@mkdir -p tools/novel
-	@rm -rf tools/novel/
-	@cd tools && unzip -q "../novel.zip"
-	@rm "novel.zip"
 
 
 validate: $(EPUBFILE) $(EPUBCHECK)
