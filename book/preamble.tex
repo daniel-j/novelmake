@@ -28,11 +28,11 @@
 \SetLooseHead{10}
 
 % modify my-microtype.cfg if desired
-\tolerance=700
-\microtypesetup{config=book/my-microtype,stretch=30,shrink=18,final,tracking,protrusion=true}
+%\tolerance=700
+%\microtypesetup{config=book/my-microtype,stretch=30,shrink=18,final,tracking,protrusion=true}
 
 % Main font setup
-% If no Adobe Garamond Pro, fall back to default
+% If no Adobe Garamond Pro, fall back to EB Garamond
 
 \IfFontExistsTF{./fonts/AdobeGaramondPro/AdobeGaramondPro-Regular.otf}{
 	\SetParentFont[
@@ -47,6 +47,14 @@
 	\SetFontSize{11.5pt}
 }{
 	\SetFontSize{11.5pt}
+	\SetParentFont[
+		Path=./fonts/EB Garamond/,
+		Extension=.otf,
+		ItalicFont=*-Italic,
+		BoldFont=*-Semibold,
+		BoldItalicFont=*-SemiboldItalic,
+		UprightFont=*-Regular
+	]{EB Garamond}
 }
 
 % Set up a special font

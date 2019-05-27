@@ -87,7 +87,7 @@ $(AZW3FILE): $(EPUBFILE)
 	ebook-convert "$(EPUBFILE)" "$(AZW3FILE)" --pretty-print --no-inline-toc --max-toc-links=0 --disable-font-rescaling --cover=./src/OEBPS/Images/cover.jpg --book-producer=djazz
 
 # Builds the LaTeX files from XHTML
-build/latex/%.xhtml.tex: src/OEBPS/Text/%.xhtml src/OEBPS/Styles/style.css tools/html2latex-novel.py
+build/latex/%.xhtml.tex: src/OEBPS/Text/%.xhtml src/OEBPS/Styles/style.css tools/html2latex-novel.py buildartwork
 	@mkdir -p "build/latex/"
 	python3 -B tools/html2latex-novel.py --style "src/OEBPS/Styles/style.css" --input "$<" --output "$@"
 
@@ -99,7 +99,7 @@ build/tex/impnattypo/impnattypo.sty: tools/impnattypo/impnattypo.ins tools/impna
 	@cd tools/impnattypo && latex -draftmode -output-directory=../../build/tex/impnattypo impnattypo.ins
 
 # Builds the PDF from LaTeX files
-$(PDFFILE): $(LATEXNOVEL) $(TEXPARTS) book/* build/tex/impnattypo/impnattypo.sty tools/novel/* buildartwork
+$(PDFFILE): $(LATEXNOVEL) $(TEXPARTS) book/* build/tex/impnattypo/impnattypo.sty tools/novel/*
 	@echo Building book...
 	@tools/novelrun book/book.tex
 	@touch $(PDFFILE)
@@ -196,8 +196,9 @@ clean:
 	rm -f "$(KEPUBFILE)"
 	rm -f "$(KINDLEFILE)"
 	rm -f "$(AZW3FILE)"
-	rm -rf build/.book build/parts build/.parts build/latex
+	rm -rf build/.book build/parts build/.parts build/latex build/build build/tex
 	rm -rf build/artwork
+	rm -rf .texmf-var
 	@# only remove dir if it's empty:
 	@(rmdir `dirname $(EPUBFILE)`; exit 0)
 

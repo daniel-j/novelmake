@@ -7,7 +7,7 @@ RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
     less nano bash-completion \
     make zip unzip \
-    texlive-latex-extra texlive-luatex texlive-fonts-extra texlive-lang-french fontconfig \
+    texlive-latex-extra texlive-luatex \
     imagemagick graphicsmagick ghostscript \
     python3-lxml python3-cssutils python3-cssselect
 

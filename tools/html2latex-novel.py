@@ -49,26 +49,16 @@ def handle_anchor(selector, el):
     return None
 
 
-def handle_paragraph(selector, el):
-    # hanging indentation
-    match = r'^“'
-    node = el
-    while True:
-        if node.text and re.match(match, node.text):
-            replacements_head[node] = (match, '\\\\leavevmode\\\\llap{“}')
-            break
-        elif not node.text and node.__len__() > 0:
-            node = node[0]
-        else:
-            break
-
-    return s('\n\n')
-
-
 def handle_nbsp(el, pos, char):
     if el.get('class') == 'chapter-number':
         return '~\\,~'
     return '~'
+
+
+def handle_img(selector, el):
+    name = os.path.basename(el.get('src'))
+    name = name.replace('-bw.jpg', '-bw.png')
+    return s('\\FloatImage{' + os.path.join('build/artwork', name) + '}\n')
 
 
 # Available options: hyperref, footnotes or None
@@ -82,7 +72,7 @@ selectors = {
     'blockquote': s('\n\\begin{quotation}', '\n\\end{quotation}'),
     'ol': s('\n\\begin{enumerate}', '\n\\end{enumerate}'),
     'ul': s('\n\\begin{itemize}', '\n\\end{itemize}'),
-    'li': s('\n\t\item '),
+    'li': s('\n\t\\item '),
     'i': s('\\textit{', '}', ignoreStyle=True),
     'b, strong': s('\\textbf{', '}', ignoreStyle=True),
     'em': s('\\emph{', '}', ignoreStyle=True),
@@ -92,9 +82,10 @@ selectors = {
     'br': s('~\\\\\n'),
     'hr': s('\n\n\\line(1,0){300}\n', ignoreStyle=True),
     'a': handle_anchor,
+    'img': handle_img,
 
     # customized
-    'p': handle_paragraph,
+    'p': s('\n\n'),
     '.chapter-name': s('\n\n\\noindent\\hfil\\charscale[2,0,-0.1\\nbs]{', '}\\hfil\\newline\n\\vspace*{1\\nbs}\n\n', ignoreStyle=True),
     '.center': s('\n\n{\\csname @flushglue\\endcsname=0pt plus .25\\textwidth\n\\noindent\\centering{}', '\\par\n}', ignoreStyle=True),
     '.vfill': s('\n\n\\vspace*{\\fill}', '', ignoreContent=True, ignoreStyle=True)
@@ -103,7 +94,7 @@ selectors = {
 characters = {
     u'\u00A0': handle_nbsp, # &nbsp;
     u'\u2009': '\\,', # &thinsp;
-    u'\u2003': '\hspace*{1em}', # &emsp;
+    u'\u2003': '\\hspace*{1em}', # &emsp;
     '[': '{[}',
     ']': '{]}'
 }
@@ -144,7 +135,7 @@ styles = {
     'margin': {
         '0 2em': ('\n\n\\begin{adjustwidth}{2em}{2em}\n', '\n\\end{adjustwidth}\n\n'),
         '0 1em 0 2em': ('\n\n\\begin{adjustwidth}{2em}{1em}\n', '\n\\end{adjustwidth}\n\n'),
-        '0 1em': ('\n\n\\begin{adjustwidth}{2em}{2em}\n', '\n\end{adjustwidth}\n\n')
+        '0 1em': ('\n\n\\begin{adjustwidth}{2em}{2em}\n', '\n\\end{adjustwidth}\n\n')
     },
     'margin-top': {
         '1em': ('\n\n\\vspace{\\baselineskip}\n\\noindent\n', '')
