@@ -94,8 +94,11 @@ build/latex/%.xhtml.tex: src/OEBPS/Text/%.xhtml src/OEBPS/Styles/style.css tools
 
 buildtexparts: $(TEXPARTS)
 
+tools/impnattypo/impnattypo.sty: tools/impnattypo/impnattypo.ins tools/impnattypo/impnattypo.dtx
+	@cd tools/impnattypo && yes | latex impnattypo.ins
+
 # Builds the PDF from LaTeX files
-$(PDFFILE): $(LATEXNOVEL) $(TEXPARTS) book/* tools/novel/*
+$(PDFFILE): $(LATEXNOVEL) $(TEXPARTS) book/* tools/impnattypo/impnattypo.sty tools/novel/*
 	@echo Building book...
 	@tools/novelrun book/book.tex
 	@touch $(PDFFILE)

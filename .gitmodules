@@ -4,3 +4,6 @@
 [submodule "tools/novel"]
 	path = tools/novel
 	url = https://github.com/daniel-j/novel
+[submodule "tools/impnattypo"]
+	path = tools/impnattypo
+	url = https://github.com/raphink/impnattypo.git
