@@ -32,7 +32,7 @@ EBOOKVIEWER := $(shell command -v ebook-viewer 2>&1)
 JAVA        := $(shell command -v java 2>&1)
 INOTIFYWAIT := $(shell command -v inotifywait 2>&1)
 
-EPUBCHECK_VERSION = 4.2.1
+EPUBCHECK_VERSION = 4.2.2
 # https://github.com/IDPF/epubcheck/releases
 EPUBCHECK_URL = https://github.com/IDPF/epubcheck/releases/download/v$(EPUBCHECK_VERSION)/epubcheck-$(EPUBCHECK_VERSION).zip
 # http://www.amazon.com/gp/feature.html?docId=1000765211
