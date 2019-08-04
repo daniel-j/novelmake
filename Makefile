@@ -23,20 +23,23 @@ PNGFILES = $(shell find $(SOURCE) -name '*.png' | sort)
 
 ARTWORKFILES = $(shell find artwork -name '*.png' -or -name '*.jpg' | grep -v -w "artwork/cover.png" | sort | sed -e 's/^artwork\//.\/build\/artwork\//' -e 's/-bw\.jpg$$/-bw\.png/')
 
-EPUBCHECK = ./tools/epubcheck/epubcheck.jar
-KINDLEGEN = ./tools/kindlegen/kindlegen
-LATEXNOVEL = ./tools/novel
+EPUBCHECK := ./tools/epubcheck/epubcheck.jar
+KINDLEGEN := $(shell command -v kindlegen 2>&1 || echo ./tools/kindlegen/kindlegen)
+KEPUBIFY := $(shell command -v kepubify 2>&1 || echo ./tools/kepubify)
 
 EBOOKPOLISH := $(shell command -v ebook-polish 2>&1)
 EBOOKVIEWER := $(shell command -v ebook-viewer 2>&1)
 JAVA        := $(shell command -v java 2>&1)
 INOTIFYWAIT := $(shell command -v inotifywait 2>&1)
 
-EPUBCHECK_VERSION = 4.2.2
 # https://github.com/IDPF/epubcheck/releases
+EPUBCHECK_VERSION = 4.2.2
 EPUBCHECK_URL = https://github.com/IDPF/epubcheck/releases/download/v$(EPUBCHECK_VERSION)/epubcheck-$(EPUBCHECK_VERSION).zip
 # http://www.amazon.com/gp/feature.html?docId=1000765211
 KINDLEGEN_URL_LINUX = http://kindlegen.s3.amazonaws.com/kindlegen_linux_2.6_i386_v2_9.tar.gz
+# https://github.com/geek1011/kepubify/releases
+KEPUBIFY_VERSION = 2.3.3
+KEPUBIFY_URL_LINUX = https://github.com/geek1011/kepubify/releases/download/v$(KEPUBIFY_VERSION)/kepubify-linux-64bit
 
 .PRECIOUS: build/latex/%.xhtml.tex
 .PHONY: all clean validate build buildkepub buildkindle buildcover buildbook buildtexparts buildpdfparts buildartwork extractcurrent watchcurrent release publish
@@ -52,16 +55,9 @@ $(EPUBFILE): $(SOURCEFILES)
 	@cd "$(SOURCE)" && zip -Xr9D "../$(EPUBFILE)" . -x mimetype -x "*.DS_Store"
 
 buildkepub: $(KEPUBFILE)
-$(KEPUBFILE): $(EPUBFILE) $(SOURCEFILES)
+$(KEPUBFILE): $(EPUBFILE) $(SOURCEFILES) $(KEPUBIFY)
 	@echo "Building Kobo EPUB..."
-	@cp -f "$(EPUBFILE)" "$(KEPUBFILE)"
-	@for current in $(XHTMLFILES); do \
-		mkdir -p "$$(dirname "tmp/$$current")"; \
-		echo "Kepubifying $$current..."; \
-		./tools/kepubify.py "$$current" > "tmp/$$current"; \
-	done
-	@cd "tmp/$(SOURCE)" && zip -Xr9D "../../$(KEPUBFILE)" .
-	@rm -rf "tmp/"
+	@$(KEPUBIFY) $(EPUBFILE) -o build
 
 buildkindle: $(KINDLEFILE)
 $(KINDLEFILE): $(EPUBFILE) $(KINDLEGEN)
@@ -99,14 +95,14 @@ build/tex/impnattypo/impnattypo.sty: tools/impnattypo/impnattypo.ins tools/impna
 	@cd tools/impnattypo && latex -draftmode -output-directory=../../build/tex/impnattypo impnattypo.ins
 
 # Builds the PDF from LaTeX files
-$(PDFFILE): $(LATEXNOVEL) $(TEXPARTS) book/* build/tex/impnattypo/impnattypo.sty tools/novel/*
+$(PDFFILE): $(TEXPARTS) book/* build/tex/impnattypo/impnattypo.sty tools/novel/*
 	@echo Building book...
 	@tools/novelrun book/book.tex
 	@touch $(PDFFILE)
 
 buildbook: $(PDFFILE)
 
-build/parts/%.pdf: $(LATEXNOVEL) build/latex/%.xhtml.tex book/* tools/novel/*
+build/parts/%.pdf: build/latex/%.xhtml.tex book/* tools/novel/*
 	@echo Building part $*.pdf...
 	@mkdir -p build/parts
 	@TEXINPUTS=./tools/novel/:$(kpsewhich -var-value TEXINPUTS) tools/latexrun --latex-cmd lualatex --latex-args="--jobname=\"$*\"" -Wall -Wno-fontspec --verbose-cmds -O "build/.parts/$*" -o "$@" book/single.tex
@@ -163,6 +159,12 @@ $(KINDLEGEN):
 	@mkdir -p `dirname $(KINDLEGEN)`
 	@tar -zxf "kindlegen.tar.gz" -C `dirname $(KINDLEGEN)`
 	@rm "kindlegen.tar.gz"
+
+$(KEPUBIFY):
+	@echo Downloading kepubify...
+	@curl -o "tools/kepubify.tmp" -L "$(KEPUBIFY_URL_LINUX)" --connect-timeout 30
+	@mv "tools/kepubify.tmp" "tools/kepubify"
+	@chmod +x "tools/kepubify"
 
 
 validate: $(EPUBFILE) $(EPUBCHECK)
